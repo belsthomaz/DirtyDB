@@ -18,6 +18,6 @@ public class DBFrame extends JFrame
 	{
 		this.setContentPane(myDBPanel);
 		this.setVisible(true);
-		this.setSize(500,500);
+		this.setSize(700,700);
 	}
 }

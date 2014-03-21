@@ -1,5 +1,6 @@
 package db.controller;
 
+import java.awt.Container;
 import java.util.ArrayList;
 
 import db.model.GraveMarker;
@@ -28,5 +29,11 @@ public class AppController
 	public DBController getMyDataController()
 	{
 		return myDataController;
+	}
+
+	public Container getMyGraveyardPeople()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
