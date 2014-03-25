@@ -31,9 +31,9 @@ public class AppController
 		return myDataController;
 	}
 
-	public Container getMyGraveyardPeople()
+	public ArrayList<Person> getMyGraveyardPeople()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		
+		return myGraveyardPeople;
 	}
 }

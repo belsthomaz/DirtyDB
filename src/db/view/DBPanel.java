@@ -1,6 +1,7 @@
 package db.view;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -19,45 +20,76 @@ public class DBPanel extends JPanel
 {
 	private AppController baseController;
 	private JTextField nameField;
+	private JTextField birthDateField;
 	private JTextField deathDateField;
 	private JTextField ageField;
+	private JTextField oldName;
+	private JTextField newName;
+	private JCheckBox marriedBox;
+	private JCheckBox childrenBox;
 	private JButton createDBButton;
 	private JButton deleteDBButton;
 	private JButton createTableButton;
 	private JButton createPeopleTableButton;
 	private JButton insertPersonButton;
 	private SpringLayout baseLayout;
-	private JLabel nameLabel;
-	private JLabel birthDateLabel;
-	private JLabel deathDateLabel;
-	private JLabel ageLabel;
+	private JLabel childrenLabel;
+	private JLabel marriedLabel;
 	
 	public DBPanel(AppController baseController)
 	{
-		
 		this.baseController = baseController;
 		
 		createDBButton = new JButton("Create Database");
 		deleteDBButton = new JButton("Delete Database");
 		createTableButton = new JButton("Create a Table");
 		createPeopleTableButton = new JButton("Create a people table");
-		insertPersonButton = new JButton("put person in table");
-		nameField = new JTextField(40);
-		deathDateField = new JTextField(30);
-		ageField = new JTextField(10);
-		nameLabel = new JLabel("Name field:");
-		birthDateLabel = new JLabel("Birth Date field:");
-		deathDateLabel = new JLabel("Death Date field:");
-		ageLabel = new JLabel("Age field:");
+		insertPersonButton = new JButton("Put person in table");
+		nameField = new JTextField("Insert Person's Name Here");
+		birthDateField = new JTextField("Insert Birthdate Here");
+		deathDateField = new JTextField("Insert Deathdate Here");
+		ageField = new JTextField("Insert Age Here");
+		oldName = new JTextField("Insert Old Name Here");
+		newName = new JTextField("Insert New Name Here");
+		marriedBox = new JCheckBox();
+		childrenBox = new JCheckBox();
+		marriedLabel = new JLabel("Is he/she married?");
+		marriedLabel.setForeground(new Color(255, 255, 255));
+		childrenLabel = new JLabel("Does he/she have children?");
+		childrenLabel.setForeground(new Color(255, 255, 255));
+		
 		
 		baseLayout = new SpringLayout();
-
-		
-		
-		
-
-		
-		
+		baseLayout.putConstraint(SpringLayout.NORTH, newName, 4, SpringLayout.SOUTH, oldName);
+		baseLayout.putConstraint(SpringLayout.WEST, newName, 138, SpringLayout.EAST, marriedLabel);
+		baseLayout.putConstraint(SpringLayout.NORTH, ageField, 9, SpringLayout.SOUTH, marriedBox);
+		baseLayout.putConstraint(SpringLayout.NORTH, marriedLabel, 3, SpringLayout.NORTH, marriedBox);
+		baseLayout.putConstraint(SpringLayout.NORTH, oldName, 91, SpringLayout.SOUTH, createPeopleTableButton);
+		baseLayout.putConstraint(SpringLayout.NORTH, childrenBox, -3, SpringLayout.NORTH, childrenLabel);
+		baseLayout.putConstraint(SpringLayout.NORTH, createTableButton, 6, SpringLayout.SOUTH, insertPersonButton);
+		baseLayout.putConstraint(SpringLayout.NORTH, deleteDBButton, 0, SpringLayout.NORTH, insertPersonButton);
+		baseLayout.putConstraint(SpringLayout.WEST, deleteDBButton, 27, SpringLayout.EAST, insertPersonButton);
+		baseLayout.putConstraint(SpringLayout.NORTH, createPeopleTableButton, 0, SpringLayout.NORTH, createDBButton);
+		baseLayout.putConstraint(SpringLayout.WEST, oldName, 2, SpringLayout.WEST, newName);
+		baseLayout.putConstraint(SpringLayout.NORTH, nameField, 115, SpringLayout.NORTH, this);
+		baseLayout.putConstraint(SpringLayout.SOUTH, createDBButton, -13, SpringLayout.NORTH, nameField);
+		baseLayout.putConstraint(SpringLayout.NORTH, childrenLabel, 9, SpringLayout.SOUTH, deathDateField);
+		baseLayout.putConstraint(SpringLayout.WEST, childrenLabel, 14, SpringLayout.EAST, childrenBox);
+		baseLayout.putConstraint(SpringLayout.WEST, marriedLabel, 14, SpringLayout.EAST, marriedBox);
+		baseLayout.putConstraint(SpringLayout.WEST, createPeopleTableButton, 35, SpringLayout.EAST, createDBButton);
+		baseLayout.putConstraint(SpringLayout.WEST, createDBButton, 0, SpringLayout.WEST, createTableButton);
+		baseLayout.putConstraint(SpringLayout.WEST, nameField, 0, SpringLayout.WEST, createTableButton);
+		baseLayout.putConstraint(SpringLayout.WEST, birthDateField, 0, SpringLayout.WEST, createTableButton);
+		baseLayout.putConstraint(SpringLayout.WEST, deathDateField, 0, SpringLayout.WEST, createTableButton);
+		baseLayout.putConstraint(SpringLayout.WEST, childrenBox, 0, SpringLayout.WEST, createTableButton);
+		baseLayout.putConstraint(SpringLayout.WEST, marriedBox, 0, SpringLayout.WEST, createTableButton);
+		baseLayout.putConstraint(SpringLayout.WEST, ageField, 0, SpringLayout.WEST, createTableButton);
+		baseLayout.putConstraint(SpringLayout.WEST, insertPersonButton, 0, SpringLayout.WEST, createTableButton);
+		baseLayout.putConstraint(SpringLayout.WEST, createTableButton, 36, SpringLayout.WEST, this);
+		baseLayout.putConstraint(SpringLayout.NORTH, insertPersonButton, 24, SpringLayout.SOUTH, ageField);
+		baseLayout.putConstraint(SpringLayout.NORTH, marriedBox, 217, SpringLayout.NORTH, this);
+		baseLayout.putConstraint(SpringLayout.NORTH, deathDateField, 6, SpringLayout.SOUTH, birthDateField);
+		baseLayout.putConstraint(SpringLayout.NORTH, birthDateField, 6, SpringLayout.SOUTH, nameField);
 		setupPanel();
 		setupLayout();
 		setupListeners();
@@ -74,42 +106,21 @@ public class DBPanel extends JPanel
 		this.add(insertPersonButton);
 		this.add(ageField);
 		this.add(nameField);
+		this.add(birthDateField);
 		this.add(deathDateField);
-		this.add(ageLabel);
-		this.add(birthDateLabel);
-		this.add(deathDateLabel);
-		this.add(nameLabel);
+		this.add(oldName);
+		this.add(newName);
+		this.add(marriedBox);
+		this.add(childrenBox);
+		this.add(marriedLabel);
+		this.add(childrenLabel);
 
 	}
 	
 	public void setupLayout()
 	{
-		setBackground(new Color(64, 224, 208));
-		baseLayout.putConstraint(SpringLayout.SOUTH, deathDateLabel, -226, SpringLayout.SOUTH, this);
-		baseLayout.putConstraint(SpringLayout.NORTH, ageField, 303, SpringLayout.NORTH, this);
-		baseLayout.putConstraint(SpringLayout.WEST, ageLabel, 0, SpringLayout.WEST, createDBButton);
-		baseLayout.putConstraint(SpringLayout.SOUTH, ageLabel, -6, SpringLayout.NORTH, ageField);
-		baseLayout.putConstraint(SpringLayout.WEST, ageField, 0, SpringLayout.WEST, createDBButton);
-		baseLayout.putConstraint(SpringLayout.WEST, deathDateLabel, 0, SpringLayout.WEST, createDBButton);
-		baseLayout.putConstraint(SpringLayout.NORTH, nameLabel, 37, SpringLayout.SOUTH, createTableButton);
-		baseLayout.putConstraint(SpringLayout.SOUTH, nameLabel, -11, SpringLayout.NORTH, nameField);
-		baseLayout.putConstraint(SpringLayout.SOUTH, nameField, -6, SpringLayout.NORTH, birthDateLabel);
-		baseLayout.putConstraint(SpringLayout.WEST, nameLabel, 0, SpringLayout.WEST, createDBButton);
-		baseLayout.putConstraint(SpringLayout.NORTH, nameField, 63, SpringLayout.SOUTH, createTableButton);
-		baseLayout.putConstraint(SpringLayout.WEST, nameField, 0, SpringLayout.WEST, createDBButton);
-		baseLayout.putConstraint(SpringLayout.NORTH, birthDateLabel, 92, SpringLayout.SOUTH, createTableButton);
-		baseLayout.putConstraint(SpringLayout.WEST, birthDateLabel, 0, SpringLayout.WEST, createDBButton);
-		baseLayout.putConstraint(SpringLayout.WEST, deathDateField, 0, SpringLayout.WEST, createDBButton);
-		baseLayout.putConstraint(SpringLayout.WEST, createDBButton, 10, SpringLayout.WEST, this);
-		baseLayout.putConstraint(SpringLayout.WEST, deleteDBButton, 0, SpringLayout.WEST, createDBButton);
-		baseLayout.putConstraint(SpringLayout.SOUTH, deleteDBButton, -27, SpringLayout.SOUTH, this);
-		baseLayout.putConstraint(SpringLayout.NORTH, insertPersonButton, 12, SpringLayout.SOUTH, createPeopleTableButton);
-		baseLayout.putConstraint(SpringLayout.NORTH, createTableButton, 12, SpringLayout.SOUTH, createDBButton);
-		baseLayout.putConstraint(SpringLayout.WEST, insertPersonButton, 0, SpringLayout.WEST, createPeopleTableButton);
-		baseLayout.putConstraint(SpringLayout.NORTH, createPeopleTableButton, 0, SpringLayout.NORTH, createDBButton);
-		baseLayout.putConstraint(SpringLayout.WEST, createPeopleTableButton, 30, SpringLayout.EAST, createDBButton);
-		baseLayout.putConstraint(SpringLayout.WEST, createTableButton, 0, SpringLayout.WEST, createDBButton);
-		baseLayout.putConstraint(SpringLayout.NORTH, createDBButton, 10, SpringLayout.NORTH, this);
+		setBackground(new Color(123, 104, 238));
+		
 	}
 	
 	public void setupListeners()
@@ -162,29 +173,21 @@ public class DBPanel extends JPanel
 			}
 		});
 	}
-	private boolean checkInteger(String current)
+
+	private boolean checkParseInteger(String current)
 	{
-		boolean checkInteger = false;
+		boolean isParseble = false;
 		
 		try
 		{
 			Integer.parseInt(current);
-			checkInteger = true;
+			isParseble = true;
 		}
-		catch(NumberFormatException currentException)
+		catch(NumberFormatException currentNumber)
 		{
-			JOptionPane.showMessageDialog(this, "Make sure you typed in a number for the age :)");
+			JOptionPane.showMessageDialog(this, "Try typing an integer for the age :)");
 		}
-		
-		return checkInteger;
-		
-	}
-	
-	private	Person createPersonFromInputInput()
-	{
-		Person deadPerson = null;
-		
-		return deadPerson;
+		return isParseble;
 	}
 
 }

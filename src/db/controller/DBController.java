@@ -30,6 +30,12 @@ public class DBController
 		this.connectionString = connectionString;
 	}
 
+
+/**	public void buildConnectionString(String serverPath, String database, String userName, String password)
+	{
+		connectionString = "jdbc:mysql://" + serverPath + "/" + database + "?user=" + userName +"&password=" + password;
+	}*/
+	
 	/**
 	 * Checks that the MySql database driver is loaded with the project. Shuts
 	 * the program down if it fails.
@@ -48,6 +54,7 @@ public class DBController
 			System.exit(1);
 		}
 	}
+	
 
 	/**
 	 * Make the connection to the databases using the connection string. Catches
@@ -65,6 +72,7 @@ public class DBController
 		}
 	}
 
+	
 	/**
 	 * Displays the associated SQL and Java errors attached to this database
 	 * project
@@ -230,24 +238,33 @@ public class DBController
 		String connectionEnd = connectionString.substring(queryIndex);
 		connectionString = connectionStart + database + connectionEnd;
 		
-		setupConnection();
 		try
 		{
-			Statement creatTableStatement = databaseConnection.createStatement();
-			String createMyPersonTable = "CREATE TABLE IF NOT EXISTS '" + database + "`.` `people" +
+			Statement createTableStatement = databaseConnection.createStatement();
+			String createPersonTable = "CREATE TABLE `" + database + "`.`people`"+
 					"(" +
-						"`person_id` INT NOT NULL AUTOINCREMENT PRIMARY KEY," +
+						"`person_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
 						"`person_name` VARCHAR (50) NOT NULL," +
 						"`person_birth_date` VARCHAR (30)," +
-						"`person_death_date` VARCHAR (30,)" +
+						"`person_death_date` VARCHAR (30)," +
 						"`person_is_married` BOOL," +
 						"`person_has_children` BOOL," +
-						"`person_age` INT" +
-						") ENGINE = INNODB;";
+						"`person_age` INT) " +
+						"ENGINE = INNODB;";
+			
+			int result = createTableStatement.executeUpdate(createPersonTable);
+			createTableStatement.close();
 		}
 		catch(SQLException currentSQLError)
 		{
 			displaySQLErrors(currentSQLError);
 		}
 	}
+
+/**	public void connectToExternalServer()
+	{
+		buildConnectionString("10.228.6.204" , "", "ctec", "student");
+		setupConnection();
+	}*/
+
 }
