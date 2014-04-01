@@ -19,19 +19,33 @@ public class DBController
 		checkDriver();
 		setupConnection();
 	}
-
+	
+	/**
+	 * creates a DBController
+	 * @return
+	 */
 	public String getConnectionString()
 	{
 		return connectionString;
 	}
-
+	
+	/**
+	 * sets the class level connectionString with the supplied String object.
+	 * @param connectionString
+	 */
 	public void setConnectionString(String connectionString)
 	{
 		this.connectionString = connectionString;
 	}
 
-
-/**	public void buildConnectionString(String serverPath, String database, String userName, String password)
+	/**
+	 * Builds a Java connectionString for a MySQL database with the supplied fields for server path.
+	 * @param serverPath the path to the server.
+	 * @param database the name of the database you are connecting to you.
+	 * @param userName the username for the database access.
+	 * @param password the password in cleartext for the connection.
+	 */
+	/**public void buildConnectionString(String serverPath, String database, String userName, String password)
 	{
 		connectionString = "jdbc:mysql://" + serverPath + "/" + database + "?user=" + userName +"&password=" + password;
 	}*/
@@ -90,7 +104,7 @@ public class DBController
 	private void clearConnection()
 	{
 		closeConnection();
-		connectionString = "jdbc:mysql://localhost/?user=root";
+		//connectionString = "jdbc:mysql://localhost/?user=root";
 		setupConnection();
 	}
 
@@ -106,14 +120,14 @@ public class DBController
 		}
 	}
 
-	public void createDatabase()
+	public void createDatabase(String database)
 	{
 		clearConnection();
 		try
 		{
 			Statement createDatabaseStatement = databaseConnection.createStatement();
 
-			int result = createDatabaseStatement.executeUpdate("CREATE DATABASE graveyard");
+			int result = createDatabaseStatement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + database);
 			createDatabaseStatement.close();
 
 		}
@@ -121,16 +135,17 @@ public class DBController
 		{
 			displaySQLErrors(currentSQLError);
 		}
+		JOptionPane.showMessageDialog(null, "Database Created.");
 	}
 
-	public void deleteDatabase()
+	public void deleteDatabase(String database)
 	{
 		clearConnection();
 		try
 		{
 			Statement deleteDatabaseStatement = databaseConnection.createStatement();
 
-			int result = deleteDatabaseStatement.executeUpdate("DROP DATABASE graveyard;");
+			int result = deleteDatabaseStatement.executeUpdate("DROP DATABASE" + database + " ;");
 			deleteDatabaseStatement.close();
 
 		}
@@ -261,10 +276,11 @@ public class DBController
 		}
 	}
 
-/**	public void connectToExternalServer()
+	/**public void connectToExternalServer()
 	{
 		buildConnectionString("10.228.6.204" , "", "ctec", "student");
 		setupConnection();
+		JOptionPane.showMessageDialog(null, "Connection Successful.");
 	}*/
 
 }
