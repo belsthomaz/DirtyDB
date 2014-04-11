@@ -1,6 +1,7 @@
 package db.controller;
 
 import java.sql.*;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
@@ -100,14 +101,18 @@ public class DBController
 		JOptionPane.showMessageDialog(null, "SQL state is: " + current.getSQLState());
 		JOptionPane.showMessageDialog(null, "Java error code is: " + current.getErrorCode());
 	}
-
+	/**
+	 * clears the old connection with the database and then sets up a new connection.
+	 */
 	private void clearConnection()
 	{
 		closeConnection();
 		//connectionString = "jdbc:mysql://localhost/?user=root";
 		setupConnection();
 	}
-
+	/**
+	 * closes the connection with the server
+	 */
 	public void closeConnection()
 	{
 		try
@@ -119,7 +124,10 @@ public class DBController
 			displaySQLErrors(currentSQLError);
 		}
 	}
-
+	/**
+	 * creates a database 
+	 * @param database implemented in the listeners in my DBPanel
+	 */
 	public void createDatabase(String database)
 	{
 		clearConnection();
@@ -137,7 +145,10 @@ public class DBController
 		}
 		JOptionPane.showMessageDialog(null, "Database Created.");
 	}
-
+	/**
+	 * Deletes a database 
+	 * @param database implemented in the listeners in my DBPanel
+	 */
 	public void deleteDatabase(String database)
 	{
 		clearConnection();
@@ -154,8 +165,13 @@ public class DBController
 			displaySQLErrors(currentSQLError);
 		}
 	}
-
-	public void createTable(String database, String tableName)
+	/**
+	 * Creates a table
+	 * @param database implemented in the listeners in my DBPanel
+	 * @param tableName implemented in the listeners in my DBPanel
+	 * @param parameters
+	 */
+	public void createTable(String database, String tableName, String [][] parameters)
 	{
 		clearConnection();
 
@@ -167,13 +183,14 @@ public class DBController
 		try
 		{
 			Statement createTableStatement = databaseConnection.createStatement();
-			String mySQLStatement = "CREATE TABLE `" + database +"`.`" + tableName + 
-					"`(" +
-					 "`test_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ," +
-						"`test_name` VARCHAR(50) NOT NULL) " +
-						 "ENGINE = INNODB;";
+			String parameterInfo = parseParameterArray(parameters);
 			
-			int result = createTableStatement.executeUpdate(mySQLStatement);
+			String createString = "CREATE TABLE IF NOT EXISTS `" + database + "`.`" + tableName + "`" +
+					"(" +
+						parameterInfo +
+					") ENGINE=INNODB;";
+			
+			int result = createTableStatement.executeUpdate(createString);
 			createTableStatement.close();
 
 		}
@@ -183,6 +200,27 @@ public class DBController
 		}
 	}
 	
+	private String parseParameterArray(String[][] parameters)
+	{
+		String parameterInfo = "";
+		
+		for(int row = 0; row < parameters.length; row++)
+		{
+			parameterInfo += "`" + parameters[row][1] + " " + parameters [row][2] ;
+			
+			if(row <parameters.length - 1)
+			{
+				parameterInfo += ",";
+			}
+		}
+		return parameterInfo;
+	}
+	
+	/**
+	 * inserts a Person object into the database. 
+	 * currently not working.
+	 * @param currentPerson
+	 */
 	public void insertPersonIntoDatabase(Person currentPerson)
 	{
 		try
@@ -223,7 +261,11 @@ public class DBController
 			displaySQLErrors(currentSQLError);
 		}
 	}
-	
+	/**
+	 * updates the information in the database about a specific person.
+	 * @param oldName
+	 * @param newName
+	 */
 	public void updatePersonInTable(String oldName, String newName)
 	{
 		try
@@ -243,7 +285,10 @@ public class DBController
 			displaySQLErrors(currentSQLError);
 		}
 	}
-	
+	/**
+	 * creates a table to put people objects in.
+	 * @param database
+	 */
 	public void createPersonTable(String database)
 	{
 		clearConnection();
@@ -275,7 +320,77 @@ public class DBController
 			displaySQLErrors(currentSQLError);
 		}
 	}
-
+	
+	public Vector<Person> selectDataFromTable(String tableName)
+	{
+		Vector<Person> personVector = new Vector<Person>();
+		ResultSet seeDeadPeopleResults;
+		String selectQuery = "SELECT person_age, person_name, person_has_children, person_is_married, person_birth_date, person_death_date" +
+		"FROM"+ tableName + ";";
+		
+		try
+		{
+			PreparedStatement selectStatement = databaseConnection.prepareStatement(selectQuery);
+			seeDeadPeopleResults = selectStatement.executeQuery();
+			
+			while(seeDeadPeopleResults.next())
+			{
+				Person tempPerson = new Person();
+				
+				int tempAge = seeDeadPeopleResults.getInt(1);
+				String tempName = seeDeadPeopleResults.getString(2);
+				boolean tempKids = seeDeadPeopleResults.getBoolean(3);
+				boolean tempMarried = seeDeadPeopleResults.getBoolean(4);
+				String tempBirth = seeDeadPeopleResults.getString(5);
+				String tempDeath = seeDeadPeopleResults.getString(6);
+				
+				tempPerson.setAge(tempAge);
+				tempPerson.setName(tempName);
+				tempPerson.setHasChildren(tempKids);
+				tempPerson.setMarried(tempMarried);
+				tempPerson.setBirthDate(tempBirth);
+				tempPerson.setDeathDate(tempDeath);
+				
+				personVector.add(tempPerson);
+			}
+			
+			seeDeadPeopleResults.close();
+			selectStatement.close();
+			
+		}
+		catch(SQLException currentSQLError)
+		{
+			displaySQLErrors(currentSQLError);
+		}
+		return personVector;
+	}
+	
+	private Vector<Vector <String>> parsePersonInformation(Vector<Person> peopleData)
+	{
+		Vector<Vector <String>> parsedData = new Vector<Vector <String>>();
+		int currentRowCount = 1;
+		for(Person current : peopleData)
+		{
+			Vector<String> currentRow = new Vector<String>();
+			
+			currentRow.add(Integer.toString(currentRowCount));
+			currentRow.add(current.getName());
+			currentRow.add(current.getBirthDate());
+			currentRow.add(current.getDeathDate());
+			currentRow.add(Boolean.toString(current.isMarried()));
+			currentRow.add(Boolean.toString(current.isHasChildren()));
+			currentRow.add(Integer.toString(current.getAge()));
+			
+			parsedData.add(currentRow);
+			currentRowCount++;
+		}
+		
+		return parsedData;
+	}
+	
+	/**
+	 * connects to cody's external server
+	 */
 	/**public void connectToExternalServer()
 	{
 		buildConnectionString("10.228.6.204" , "", "ctec", "student");

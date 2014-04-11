@@ -177,6 +177,7 @@ public class DBPanel extends JPanel
 			{
 				Person currentPerson = new Person();
 				currentPerson.setName(nameField.getText());
+				currentPerson.setBirthDate(birthDateField.getText());
 				currentPerson.setDeathDate(deathDateField.getText());
 				currentPerson.setAge(Integer.parseInt(ageField.getText()));
 				
